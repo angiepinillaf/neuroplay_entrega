@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Juego de Memoria</title>
+    <!-- Importar la tipografía Fredoka One desde Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+	<!-- Fuente OpenDyslexic -->
+<link href="https://fonts.cdnfonts.com/css/opendyslexic" rel="stylesheet">
+</head>
+
+<!-- Botón de accesibilidad -->
+<button id="accessibility-toggle" aria-label="Opciones de accesibilidad">
+  <img src="img/accesibilidad.png" alt="Accesibilidad">
+</button>
+
+<!-- Menú de accesibilidad -->
+<div id="accessibility-menu">
+	<button onclick="toggleClass('large-text')">Aumentar texto</button>
+	<button onclick="toggleClass('high-contrast')">Alto contraste</button>
+	<button onclick="toggleClass('dyslexia-font')">Modo dislexia</button>
+	<button onclick="toggleClass('colorblind-mode')">Modo daltonismo</button>
+</div>
+
+<script>
+  // Mostrar/Ocultar el menú
+  const toggleBtn = document.getElementById('accessibility-toggle');
+  const menu = document.getElementById('accessibility-menu');
+
+  toggleBtn.addEventListener('click', () => {
+    menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
+  });
+
+  // Función para cambiar clases
+  function toggleClass(className) {
+    document.body.classList.toggle(className);
+  }
+</script>
+
+<body>
+    <!-- Pantalla de inicio -->
+    <div id="inicio" class="screen">
+        <h1>Neuroplay</h1>
+		<img src="img/logo.png" data-alt-src="img/logo_dal.png" alt="Logo" class="logo">
+        <button onclick="goToDatos()">Iniciar</button>
+    </div>
+
+
+	<!-- Pantalla de datos (nombre y edad) -->
+	<div id="datos" class="screen" style="display: none;" aria-label="Pantalla para ingresar tus datos">
+		<h1 id="titulo-datos">Ingresa tus datos para jugar</h1>
+
+		<label for="nombre">¿Cómo te llamas?</label><br>
+		<input type="text" id="nombre" placeholder="Nombre" aria-labelledby="titulo-datos" aria-required="true">
+		<button type="button" onclick="dictarNombre()" aria-label="Decir tu nombre con la voz">🎤</button><br><br>
+
+		<label for="edad">¿Cuántos años tienes?</label><br>
+		<input type="number" id="edad" placeholder="Edad" aria-required="true">
+		<button type="button" onclick="dictarEdad()" aria-label="Decir tu edad con la voz">🎤</button><br><br>
+
+		<button onclick="goToJuego()" aria-label="Comenzar el juego con los datos ingresados">Continuar</button>
+	</div>
+
+    <!-- Pantalla de selección de juegos -->
+    <div id="seleccion-juegos" class="screen" style="display: none;">
+        <h1>Selecciona un juego</h1>
+        <div class="botones-niveles">
+            <button onclick="goToJuegoMemoria()">Juego de Memoria</button>
+            <button onclick="goToFlashcards()">Flashcards</button>
+            <button onclick="goToDatos()">Volver</button>
+        </div>
+    </div>
+
+    <!-- Pantalla de juego -->
+    <div id="juego" class="screen" style="display: none;">
+        <h1>Juego de Memoria</h1>
+        <img src="img/FondoGato.png" data-alt-src="img/FondoGato_dal.png" alt="gato" class="imagen-gato">
+        <button onclick="goToNiveles()">Comenzar</button>
+    </div>
+
+    <!-- Pantalla de niveles -->
+    <div id="niveles" class="screen" style="display: none;">
+        <h1>Selecciona un nivel</h1>
+        <div class="botones-niveles">
+            <button onclick="iniciarJuegoFacil()">Fácil</button>
+            <button onclick="iniciarJuegoIntermedio()">Intermedio</button>
+            <button onclick="iniciarJuegoAvanzado()">Avanzado</button>
+        </div>
+        <button onclick="goToSeleccionJuegos()">Volver a selección de juegos</button>
+    </div>
+    <!-- Pantalla de juego fácil -->
+    <div id="memoria-facil" class="screen" style="display: none;">
+        <h1>Juego Fácil</h1>
+        <div id="tablero-facil" class="tablero"></div>
+        <button onclick="goToNiveles()">Volver a niveles</button>
+    </div>
+    <!-- Pantalla de victoria -->
+    <div id="pantalla-victoria" class="screen" style="display: none;">
+        <h1>🎉 ¡Felicidades!</h1>
+        <p>Has completado el nivel.</p>
+        <button onclick="goToNiveles()">Volver a niveles</button>
+    </div>
+	<!-- Pantalla de juego Medio -->
+    <div id="memoria-intermedio" class="screen" style="display: none;">
+		<h1>Juego Intermedio</h1>
+		<div id="tablero-intermedio" class="tablero intermedio"></div>
+		<button onclick="goToNiveles()">Volver a niveles</button>
+	</div>
+	<!-- Pantalla de juego Avanzado -->
+	<div id="memoria-avanzado" class="screen" style="display: none;">
+		<h1>Juego Avanzado</h1>
+		<div id="tablero-avanzado" class="tablero avanzado"></div>
+		<button onclick="goToNiveles()">Volver a niveles</button>
+	</div>
+
+    <!-- Pantalla de inicio del juego de Flashcards -->
+    <div id="flashcards" class="screen" style="display: none;">
+        <h1>Juego de Flashcards</h1>
+        <img src="img/flashcard-icon.png" data-alt-src="img/flashcard-icon_dal.png" alt="flashcard" class="imagen-gato">
+        <button onclick="goToNivelesFlashcards()">Comenzar</button>
+    </div>
+
+    <!-- Pantalla de niveles para Flashcards -->
+    <div id="niveles-flashcards" class="screen" style="display: none;">
+        <h1>Selecciona un nivel - Flashcards</h1>
+        <div class="botones-niveles">
+            <button onclick="iniciarFlashcardsFacil()">Fácil</button>
+            <button onclick="iniciarFlashcardsIntermedio()">Intermedio</button>
+            <button onclick="iniciarFlashcardsAvanzado()">Avanzado</button>
+            <button onclick="goToSeleccionJuegos()">Volver</button>
+        </div>
+    </div>
+
+    <!-- Pantalla de Flashcards - Nivel Fácil -->
+    <div id="flashcards-facil" class="screen" style="display: none;">
+        <h1>Flashcards - Nivel Fácil</h1>
+        <div class="card">
+            <img id="imagen-facil" src="" alt="imagen" class="imagen-gato">
+            <h2 id="texto-facil">Palabra</h2>
+        </div>
+        <button onclick="escucharPalabraFacil()">🔊 Escuchar</button>
+        <button onclick="siguienteFacil()">Siguiente</button>
+        <button onclick="decirPalabraFacil()">🎤 Decir palabra</button>
+        <p id="resultado-facil"></p>
+        <button onclick="goToNivelesFlashcards()">Volver</button>
+    </div>
+
+    <!-- Pantalla de Flashcards - Nivel Intermedio -->
+    <div id="flashcards-intermedio" class="screen" style="display: none;">
+        <h1>Flashcards - Conteo</h1>
+        <div class="card">
+            <img id="imagen-intermedio" src="" alt="imagen" class="imagen-gato">
+            <h2 id="pregunta-intermedio">Pregunta</h2>
+        </div>
+        <button onclick="escucharPreguntaIntermedio()">🔊 Escuchar pregunta</button>
+        <button onclick="decirRespuestaIntermedio()">🎤 Responder</button>
+        <p id="resultado-intermedio"></p>
+        <button onclick="siguienteIntermedio()">Siguiente</button>
+        <button onclick="goToNivelesFlashcards()">Volver</button>
+    </div>
+
+    <!-- Pantalla de Flashcards - Nivel Avanzado -->
+    <div id="flashcards-avanzado" class="screen" style="display: none;">
+        <h1>Flashcards - Avanzado</h1>
+        <div class="card">
+            <img id="imagen-avanzado" src="" alt="imagen" class="imagen-gato">
+            <h2 id="instruccion-avanzado">¿Qué hace o cómo se siente?</h2>
+        </div>
+        <button onclick="decirPalabraAvanzado()">🎤 Decir palabra</button>
+        <p id="resultado-avanzado"></p>
+        <button onclick="siguienteAvanzado()">Siguiente</button>
+        <button onclick="goToNivelesFlashcards()">Volver</button>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
